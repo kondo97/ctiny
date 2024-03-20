@@ -3,8 +3,8 @@
 #include "common.h"
 
 typedef struct {
-  Token current;
   Token previous;
+  Token current;
 } Parser;
 
 Parser parser;
@@ -15,6 +15,8 @@ static void advance() {
   for (;;) {
     parser.current = scanToken();
   }
+  printf('parser.previous: %d', parser.previous);
+  printf('parser.current: %d', parser.current);
 }
 
 static bool check(TokenType type) {

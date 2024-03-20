@@ -2,6 +2,9 @@
 #define ctiny_scanner_h
 
 typedef enum {
+  TOKEN_IDENTIFIER,
+  TOKEN_CLASS,
+  TOKEN_METHOD,
   TOKEN_EOF
 } TokenType;
 
