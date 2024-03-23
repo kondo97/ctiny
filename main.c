@@ -12,10 +12,12 @@ static void repl() {
       break;
     }
 
+    printf("line: %s\n", line);
+
     interpret(line);
   }
 }
 
-int main() {
+int main2() {
   repl();
 }
