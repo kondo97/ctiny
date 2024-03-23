@@ -3,9 +3,15 @@
 
 typedef enum {
   TOKEN_IDENTIFIER,
+  TOKEN_ERROR,
+  TOKEN_PRINT,
   TOKEN_CLASS,
   TOKEN_METHOD,
-  TOKEN_EOF
+  TOKEN_STRING,
+  TOKEN_SPACE,
+  TOKEN_EOF,
+  OP_PRINT,
+  TOKEN_SEMICOLON
 } TokenType;
 
 typedef struct {

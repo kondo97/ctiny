@@ -1,6 +1,7 @@
 #include "scanner.h"
 #include "chunk.h"
 #include "common.h"
+#include "value.h"
 
 typedef struct {
   Token previous;
@@ -9,14 +10,27 @@ typedef struct {
 
 Parser parser;
 
+static void emitByte(uint8_t byte) {
+  writeChunk(currentChunk(), byte, parser.previous.line);
+}
+
+static string() {
+  emitConstant(OBJ_VAL(copyString(parser.previous.start + 1,
+                                  parser.previous.length - 2)));
+}
+
+static void expression() {
+  advance();
+  string();
+}
+
 static void advance() {
   parser.previous = parser.current;
 
   for (;;) {
     parser.current = scanToken();
+    if (parser.current.type != TOKEN_ERROR) break;
   }
-  printf('parser.previous: %d', parser.previous);
-  printf('parser.current: %d', parser.current);
 }
 
 static bool check(TokenType type) {
@@ -29,7 +43,29 @@ static bool match(TokenType type) {
   return true;
 }
 
+static void consume(TokenType type, const char* message) {
+  if (parser.current.type == type) {
+    advance();
+    return;
+  }
+
+  printf("Error: %s\n", message);
+}
+
+static void printStatement() {
+  expression();
+  consume(TOKEN_SEMICOLON, "Expect ';' after value.");
+  emitByte(OP_PRINT);
+}
+
+static void statement() {
+  if (match(TOKEN_PRINT)) {
+     printStatement();
+  }
+}
+
 static void declaration() {
+  statement();
 }
 
 int compile(const char* source) {
