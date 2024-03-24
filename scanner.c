@@ -30,6 +30,15 @@ static char peek() {
   return *scanner.current;
 }
 
+static Token errorToken(const char* message) {
+  Token token;
+  token.type = TOKEN_ERROR;
+  token.start = message;
+  token.length = (int)strlen(message);
+  token.line = scanner.line;
+  return token;
+}
+
 static void skipWhitespace() {
   for (;;) {
     char c = peek();
@@ -86,6 +95,8 @@ Token scanToken() {
   scanner.start = scanner.current;
   if (isAtEnd()) return makeToken(TOKEN_EOF);
 
-  char c = advance();
-  identifier();
+  // char c = advance();
+  // identifier();
+
+  return errorToken("Unexpected character.");
 }

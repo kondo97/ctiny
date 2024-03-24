@@ -5,13 +5,10 @@
 VM vm;
 
 static int run() {
-#define READ_BYTE() (*vm.ip++)
   for (;;) {
-    switch (READ_BYTE()) {
-      case OP_RETURN: return 0;
+    switch (*vm.ip++) {
     }
   }
-#undef READ_BYTE
 }
 
 int interpret(const char* source) {

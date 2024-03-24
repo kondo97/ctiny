@@ -5,7 +5,8 @@ typedef enum {
   TOKEN_IDENTIFIER,
   TOKEN_CLASS,
   TOKEN_METHOD,
-  TOKEN_EOF
+  TOKEN_EOF,
+  TOKEN_ERROR
 } TokenType;
 
 typedef struct {

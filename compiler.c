@@ -5,6 +5,7 @@
 typedef struct {
   Token previous;
   Token current;
+  bool hadError;
 } Parser;
 
 Parser parser;
@@ -14,9 +15,10 @@ static void advance() {
 
   for (;;) {
     parser.current = scanToken();
+    if (parser.current.type != TOKEN_ERROR) break;
+
+    parser.hadError = true;
   }
-  printf('parser.previous: %d', parser.previous);
-  printf('parser.current: %d', parser.current);
 }
 
 static bool check(TokenType type) {
@@ -40,5 +42,9 @@ int compile(const char* source) {
     declaration();
   }
 
-  return 0;
+  if (parser.hadError) {
+    return 1;
+  } else {
+    return 0;
+  }
 }
