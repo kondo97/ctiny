@@ -21,6 +21,12 @@ static bool isAtEnd() {
   return *scanner.current == '\0';
 }
 
+static bool isAlpha(char c) {
+  return (c >= 'a' && c <= 'z') ||
+         (c >= 'A' && c <= 'Z') ||
+          c == '_';
+}
+
 static char advance() {
   scanner.current++;
   return scanner.current[-1];
@@ -39,12 +45,10 @@ static void skipWhitespace() {
       case '\t':
         advance();
         break;
-//> newline
       case '\n':
         scanner.line++;
         advance();
         break;
-//< newline
       default:
         return;
     }
@@ -61,23 +65,26 @@ static Token makeToken(TokenType type) {
 }
 
 static TokenType checkKeyword(int start, int length, const char* rest, TokenType type) {
+  printf("scanner.current: %s\n", scanner.current);
+  printf("scanner.start: %s\n", scanner.start);
+  int current = scanner.current - scanner.start;
+  printf("current: %d\n", current);
   if (scanner.current - scanner.start == start + length &&
       memcmp(scanner.start + start, rest, length) == 0) {
     return type;
   }
-
-  return TOKEN_IDENTIFIER;
+  return TOKEN_ERROR;
 }
 
 static TokenType identifierType() {
   switch (scanner.start[0]) {
-    case 'c': return checkKeyword(1, 4, "lass", TOKEN_CLASS);
-    case 'd': return checkKeyword(1, 2, "ef", TOKEN_METHOD);
+    case 'p': return checkKeyword(1, 4, "rint", TOKEN_PRINT);
   }
-  return TOKEN_IDENTIFIER;
+  return TOKEN_ERROR;
 }
 
 static Token identifier() {
+  while (isAlpha(peek())) advance();
   return makeToken(identifierType());
 }
 
@@ -87,5 +94,5 @@ Token scanToken() {
   if (isAtEnd()) return makeToken(TOKEN_EOF);
 
   char c = advance();
-  identifier();
+  return identifier();
 }

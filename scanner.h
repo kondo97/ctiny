@@ -2,10 +2,10 @@
 #define ctiny_scanner_h
 
 typedef enum {
-  TOKEN_IDENTIFIER,
-  TOKEN_CLASS,
-  TOKEN_METHOD,
-  TOKEN_EOF
+  TOKEN_PRINT,
+  TOKEN_SEMICOLON,
+  TOKEN_EOF,
+  TOKEN_ERROR
 } TokenType;
 
 typedef struct {

@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include "vm.h"
 
 static void repl() {
@@ -17,5 +15,7 @@ static void repl() {
 }
 
 int main() {
-  repl();
+  // repl();
+  interpret("print");
+  return 0;
 }
