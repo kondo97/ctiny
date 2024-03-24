@@ -15,7 +15,8 @@ static void repl() {
 }
 
 int main() {
-  // repl();
-  interpret("print");
+  initVM();
+  repl();
+  // interpret("print 1;");
   return 0;
 }

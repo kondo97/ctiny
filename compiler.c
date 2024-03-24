@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "scanner.h"
 #include "chunk.h"
 #include "value.h"
@@ -47,7 +49,7 @@ static bool match(TokenType type) {
   return true;
 }
 
-static void consume(TokenType type, const char* message) {
+static void consume(TokenType type) {
   if (parser.current.type == type) {
     advance();
     return;
@@ -55,15 +57,21 @@ static void consume(TokenType type, const char* message) {
 }
 
 static void printStatement() {
-  int message = 1;
-  emitConstant(NUMBER_VAL(message));
+  advance();
+  int value = atoi(parser.previous.start);
+  emitConstant(value);
+  consume(TOKEN_SEMICOLON);
   emitByte(OP_PRINT);
 }
 
 static void declaration() {
-  if (match(TOKEN_PRINT)) {
+  if (match(TOKEN_PRINT)) {\
     printStatement();
   }
+}
+
+static void endCompiler() {
+  emitByte(OP_RETURN);
 }
 
 int compile(const char* source, Chunk* chunk) {
@@ -74,6 +82,7 @@ int compile(const char* source, Chunk* chunk) {
   while (!match(TOKEN_EOF)) {
     declaration();
   }
+  endCompiler();
 
   return 0;
 }

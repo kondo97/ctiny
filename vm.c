@@ -1,15 +1,47 @@
 #include "chunk.h"
 #include "vm.h"
 #include "compiler.h"
+#include "value.h"
 
 VM vm;
 
+void initVM() {
+  vm.chunk = NULL;
+  vm.ip = NULL;
+  vm.stackTop = vm.stack;
+}
+
+void push(Value value) {
+  *vm.stackTop = value;
+  vm.stackTop++;
+}
+
+Value pop() {
+  vm.stackTop--;
+  return *vm.stackTop;
+}
+
 static int run() {
+#define READ_BYTE() (*vm.ip++)
   for (;;) {
-    switch (*vm.ip++) {
-      case OP_PRINT: return 0;
+    uint8_t instruction;
+    switch (instruction = READ_BYTE()) {
+      case OP_CONSTANT: {
+        Value constant = vm.chunk->constants.values[READ_BYTE()];
+        push(constant);
+        break;
+      }
+      case OP_PRINT: {
+        printf("%d", pop());
+        printf("\n");
+        break;
+      }
+      case OP_RETURN: {
+        return 0;
+      }
     }
   }
+#undef READ_BYTE
 }
 
 int interpret(const char* source) {
@@ -24,19 +56,6 @@ int interpret(const char* source) {
   if(result == 1) {
     return 1;
   }
-
-  printf("== vm ==\n");
-  printf("vm.ip: %p\n", vm.ip);
-  printf("== chunk ==\n");
-  printf("chunk.count: %d\n", vm.chunk->count);
-  printf("chunk.code: %p\n", vm.chunk->code);
-  printf("chunk.code[0]: %d\n", vm.chunk->code[0]);
-  printf("chunk.code[1]: %d\n", vm.chunk->code[1]);
-  printf("chunk.code[2]: %d\n", vm.chunk->code[2]);
-  printf("== constants ==\n");
-  printf("constants.count: %d\n", vm.chunk->constants.count);
-  printf("constants.values: %p\n", vm.chunk->constants.values);
-  printf("constants.values[0]: %f\n", vm.chunk->constants.values[0]);
 
   return run();
 }

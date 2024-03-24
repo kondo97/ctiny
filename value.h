@@ -1,7 +1,7 @@
 #ifndef ctiny_value_h
 #define ctiny_value_h
 
-typedef double Value;
+typedef int Value;
 
 typedef struct {
   // valuesの要素数
@@ -13,7 +13,5 @@ typedef struct {
 
 void initValueArray(ValueArray* array);
 void writeValueArray(ValueArray* array, Value value);
-
-#define NUMBER_VAL(value) value
 
 #endif

@@ -27,6 +27,10 @@ static bool isAlpha(char c) {
           c == '_';
 }
 
+static bool isDigit(char c) {
+  return c >= '0' && c <= '9';
+}
+
 static char advance() {
   scanner.current++;
   return scanner.current[-1];
@@ -34,6 +38,11 @@ static char advance() {
 
 static char peek() {
   return *scanner.current;
+}
+
+static char peekNext() {
+  if (isAtEnd()) return '\0';
+  return scanner.current[1];
 }
 
 static void skipWhitespace() {
@@ -65,10 +74,6 @@ static Token makeToken(TokenType type) {
 }
 
 static TokenType checkKeyword(int start, int length, const char* rest, TokenType type) {
-  printf("scanner.current: %s\n", scanner.current);
-  printf("scanner.start: %s\n", scanner.start);
-  int current = scanner.current - scanner.start;
-  printf("current: %d\n", current);
   if (scanner.current - scanner.start == start + length &&
       memcmp(scanner.start + start, rest, length) == 0) {
     return type;
@@ -88,11 +93,24 @@ static Token identifier() {
   return makeToken(identifierType());
 }
 
+static Token number() {
+  while (isDigit(peek())) advance();
+
+  if (peek() == '.' && isDigit(peekNext())) {
+    advance();
+    while (isDigit(peek())) advance();
+  }
+
+  return makeToken(TOKEN_NUMBER);
+}
+
 Token scanToken() {
   skipWhitespace();
   scanner.start = scanner.current;
   if (isAtEnd()) return makeToken(TOKEN_EOF);
 
   char c = advance();
+
+  if (isDigit(c)) return number();
   return identifier();
 }
